@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vaultomi — VC Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0F172A;
+    --accent: #3B82F6;
+    --accent2: #8B5CF6;
+    --accent3: #06B6D4;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --light: #F8FAFC;
+    --gray: #64748B;
+    --dark: #1E293B;
+    --gradient1: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    --gradient2: linear-gradient(135deg, #06B6D4, #3B82F6);
+    --gradient3: linear-gradient(135deg, #8B5CF6, #EC4899);
+    --gradient4: linear-gradient(135deg, #10B981, #06B6D4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .deck-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .slide {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    position: absolute;
+    top: 0; left: 0;
+    overflow-y: auto;
+    visibility: hidden;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+  }
+
+  .slide.active {
+    visibility: visible;
+    opacity: 1;
+    z-index: 5;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Navigation */
+  .nav-controls {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    display: flex;
+    gap: 12px;
+    z-index: 1000;
+    align-items: center;
+  }
+
+  .nav-btn {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.1);
+  }
+
+  .slide-counter {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: var(--gradient1);
+    transition: width 0.5s ease;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  /* Typography */
+  h1 { font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; }
+  h2 { font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }
+  h3 { font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; }
+
+  .slide-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .slide-title {
+    font-size: 48px;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    max-width: 900px;
+  }
+
+  .slide-subtitle {
+    font-size: 20px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    max-width: 750px;
+    font-weight: 300;
+  }
+
+  /* Stat Cards */
+  .stats-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    transition: all 0.3s;
+  }
+
+  .stat-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(59,130,246,0.3);
+    transform: translateY(-2px);
+  }
+
+  .stat-number {
+    font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: var(--gradient1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-number.green {
+    background: var(--gradient4);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .stat-number.purple {
+    background: var(--gradient3);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .stat-number.cyan {
+    background: var(--gradient2);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  /* Grid layouts */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    margin-top: 36px;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 36px;
+  }
+
+  .four-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 36px;
+  }
+
+  /* Feature cards */
+  .feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .feature-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  .feature-card p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .icon-blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
+  .icon-purple { background: rgba(139,92,246,0.15); color: #8B5CF6; }
+  .icon-cyan { background: rgba(6,182,212,0.15); color: #06B6D4; }
+  .icon-green { background: rgba(16,185,129,0.15); color: #10B981; }
+  .icon-orange { background: rgba(245,158,11,0.15); color: #F59E0B; }
+  .icon-red { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+  /* Tables */
+  .deck-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+
+  .deck-table th {
+    text-align: left;
+    padding: 14px 18px;
+    background: rgba(59,130,246,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .deck-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.75);
+  }
+
+  .deck-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* Tags / Badges */
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
+  .tag-green { background: rgba(16,185,129,0.15); color: #34D399; }
+  .tag-purple { background: rgba(139,92,246,0.15); color: #A78BFA; }
+  .tag-orange { background: rgba(245,158,11,0.15); color: #FBBF24; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #F87171; }
+
+  /* Bullet list */
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .bullet-list li {
+    padding: 10px 0;
+    padding-left: 24px;
+    position: relative;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+
+  .bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 18px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .bullet-list li strong {
+    color: #fff;
+  }
+
+  .bullet-list.green li::before { background: var(--success); }
+  .bullet-list.purple li::before { background: var(--accent2); }
+  .bullet-list.cyan li::before { background: var(--accent3); }
+
+  /* Highlight box */
+  .highlight-box {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+
+  .highlight-box.green {
+    background: rgba(16,185,129,0.08);
+    border-color: rgba(16,185,129,0.2);
+  }
+
+  .highlight-box.purple {
+    background: rgba(139,92,246,0.08);
+    border-color: rgba(139,92,246,0.2);
+  }
+
+  .highlight-box.orange {
+    background: rgba(245,158,11,0.08);
+    border-color: rgba(245,158,11,0.2);
+  }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    gap: 0;
+    margin-top: 36px;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 0; right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .timeline-item {
+    flex: 1;
+    position: relative;
+    padding-top: 48px;
+    padding-right: 16px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid #0a0a0a;
+  }
+
+  .timeline-item:nth-child(2) .timeline-dot { background: var(--accent2); }
+  .timeline-item:nth-child(3) .timeline-dot { background: var(--accent3); }
+  .timeline-item:nth-child(4) .timeline-dot { background: var(--success); }
+  .timeline-item:nth-child(5) .timeline-dot { background: var(--warning); }
+
+  .timeline-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .timeline-item:nth-child(2) .timeline-label { color: var(--accent2); }
+  .timeline-item:nth-child(3) .timeline-label { color: var(--accent3); }
+  .timeline-item:nth-child(4) .timeline-label { color: var(--success); }
+  .timeline-item:nth-child(5) .timeline-label { color: var(--warning); }
+
+  .timeline-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .timeline-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  /* Flow diagram */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .flow-step h4 {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+
+  .flow-step p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .flow-arrow {
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  /* Comparison check/cross */
+  .check { color: #10B981; font-weight: 700; }
+  .cross { color: #EF4444; font-weight: 700; }
+
+  /* Cover slide bg */
+  .cover-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 70% 20%, rgba(59,130,246,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(139,92,246,0.08) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .slide-content { position: relative; z-index: 10; }
+
+  /* India section divider */
+  .india-gradient {
+    background: radial-gradient(ellipse at 30% 40%, rgba(245,158,11,0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 70%, rgba(16,185,129,0.08) 0%, transparent 50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Divider styling */
+  .section-divider {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .section-divider .slide-title {
+    max-width: 100%;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .slide { padding: 40px 50px; }
+    .slide-title { font-size: 38px; }
+    .four-col { grid-template-columns: 1fr 1fr; }
+    .three-col { grid-template-columns: 1fr 1fr; }
+    .stat-number { font-size: 28px; }
+  }
+
+  /* Watermark */
+  .watermark {
+    position: fixed;
+    bottom: 30px;
+    left: 40px;
+    font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 2px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Scrollable content for dense slides */
+  .scroll-content {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: 16px;
+  }
+
+  .scroll-content::-webkit-scrollbar { width: 4px; }
+  .scroll-content::-webkit-scrollbar-track { background: transparent; }
+  .scroll-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  /* Print */
+  @media print {
+    .slide { page-break-after: always; visibility: visible !important; opacity: 1 !important; z-index: 5 !important; position: relative; height: auto; min-height: 100vh; }
+    .nav-controls, .progress-bar, .watermark { display: none; }
+    body { background: #fff; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="watermark">VAULTOMI</div>
+
+<div class="deck-container" id="deck">
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: COVER -->
+<!-- ============================================================ -->
+<div class="slide active" id="slide-1">
+  <div class="cover-bg"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="margin-bottom: 24px;">Confidential &mdash; Series A Fundraise &mdash; April 2026</div>
+    <h1 class="slide-title" style="font-size: 64px; margin-bottom: 20px;">
+      Secure<span style="background: var(--gradient1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Vault</span>
+    </h1>
+    <p class="slide-subtitle" style="font-size: 26px; max-width: 850px; margin-bottom: 40px;">
+      The world's first Posthumous Asset Resolution Platform &mdash; ensuring your documents, assets, and wishes reach the right people, at the right time.
+    </p>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
+      <span class="tag tag-blue" style="font-size: 13px; padding: 8px 18px;">Encrypted Document Vault</span>
+      <span class="tag tag-purple" style="font-size: 13px; padding: 8px 18px;">Video-Verified Nominees</span>
+      <span class="tag tag-green" style="font-size: 13px; padding: 8px 18px;">Life-Status Verification</span>
+      <span class="tag tag-orange" style="font-size: 13px; padding: 8px 18px;">Physical Document Delivery</span>
+      <span class="tag tag-red" style="font-size: 13px; padding: 8px 18px;">Claim Assistance</span>
+    </div>
+    <p style="margin-top: 48px; font-size: 14px; color: rgba(255,255,255,0.35);">Raising: $10&ndash;15M Series A &nbsp;|&nbsp; India-First, Global Ambition</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: THE GLOBAL PROBLEM -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-2">
+  <div class="slide-content">
+    <div class="slide-label">The Problem</div>
+    <h2 class="slide-title">$200 Billion in Assets Sit<br>Unclaimed Worldwide</h2>
+    <p class="slide-subtitle">When people die or become incapacitated, their families are left in the dark &mdash; no knowledge of what exists, where documents are, or how to claim what's rightfully theirs.</p>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number">$200B+</div>
+        <div class="stat-label">Unclaimed assets globally &mdash; dormant bank accounts, insurance, investments, pensions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number purple">76%</div>
+        <div class="stat-label">Of Americans have NO will. In India, 85%+ have no estate plan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number green">$105T</div>
+        <div class="stat-label">The "Great Wealth Transfer" &mdash; largest generational wealth event in history (US alone)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number cyan">16B</div>
+        <div class="stat-label">Credentials exposed globally in 2025. 45% of Americans had personal data compromised</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: UNCLAIMED ASSETS BREAKDOWN -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-3">
+  <div class="slide-content">
+    <div class="slide-label">Problem Deep Dive</div>
+    <h2 class="slide-title" style="font-size: 40px;">The Unclaimed Assets Crisis &mdash; By Country</h2>
+    <p class="slide-subtitle" style="font-size: 17px;">Governments are spending billions trying to return money. But they're treating the symptom, not the cause.</p>
+    <table class="deck-table" style="margin-top: 32px;">
+      <thead>
+        <tr>
+          <th>Country</th>
+          <th>Unclaimed Amount</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#fff;">United States</strong></td>
+          <td><strong style="color:#60A5FA;">$70B+</strong></td>
+          <td>State-held dormant accounts, uncashed checks, unclaimed insurance. NY alone: $17B</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff;">United States</strong></td>
+          <td><strong style="color:#60A5FA;">$58B</strong></td>
+          <td>Unclaimed tax and social security benefits</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff;">United Kingdom</strong></td>
+          <td><strong style="color:#A78BFA;">&pound;15B</strong></td>
+          <td>Dormant bank and building society accounts</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff;">United Kingdom</strong></td>
+          <td><strong style="color:#A78BFA;">&pound;19.4B</strong></td>
+          <td>Lost or forgotten pensions</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff;">India</strong></td>
+          <td><strong style="color:#FBBF24;">$12.5B</strong></td>
+          <td>INR 1.04 lakh crore across banks, insurance, and mutual funds</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#fff;">Australia</strong></td>
+          <td><strong style="color:#34D399;">AUD 16.2B</strong></td>
+          <td>Lost accounts and unclaimed benefits (5M beneficiaries)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight-box" style="margin-top: 24px;">
+      <strong style="color: #60A5FA;">Root Cause:</strong> <span style="color: rgba(255,255,255,0.7);">Families don't know what assets exist, where documents are stored, or how to claim them. Government portals help discovery &mdash; but no one solves the <strong style="color:#fff;">end-to-end resolution</strong>.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: THE SOLUTION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-4">
+  <div class="slide-content">
+    <div class="slide-label">Our Solution</div>
+    <h2 class="slide-title">Vaultomi &mdash; The Complete<br>Family Protection Platform</h2>
+    <p class="slide-subtitle">Not just a vault. An end-to-end system that stores, verifies, delivers, and helps claim.</p>
+    <div class="flow-row" style="margin-top: 40px;">
+      <div class="flow-step" style="border-color: rgba(59,130,246,0.3);">
+        <h4 style="color: #60A5FA;">1. STORE</h4>
+        <p>Encrypted document vault<br>Zero-knowledge architecture</p>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="border-color: rgba(139,92,246,0.3);">
+        <h4 style="color: #A78BFA;">2. VERIFY</h4>
+        <p>Video-verified nominees<br>Aadhaar / Govt ID KYC</p>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="border-color: rgba(6,182,212,0.3);">
+        <h4 style="color: #22D3EE;">3. MONITOR</h4>
+        <p>Annual life-status checks<br>Email + SMS + Phone</p>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="border-color: rgba(16,185,129,0.3);">
+        <h4 style="color: #34D399;">4. RELEASE</h4>
+        <p>Automated to nominees<br>After 3 failed check-ins</p>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="border-color: rgba(245,158,11,0.3);">
+        <h4 style="color: #FBBF24;">5. DELIVER</h4>
+        <p>Physical docs with video<br>verification at handover</p>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step" style="border-color: rgba(239,68,68,0.3);">
+        <h4 style="color: #F87171;">6. ASSIST</h4>
+        <p>Claim support for<br>insurance, bank, legal</p>
+      </div>
+    </div>
+    <div class="highlight-box green" style="margin-top: 32px;">
+      <strong style="color: #34D399;">Key Insight:</strong> <span style="color: rgba(255,255,255,0.7);">Every existing competitor stops at steps 1&ndash;4. <strong style="color:#fff;">No one does physical delivery + claim assistance.</strong> This is our moat.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: GLOBAL MARKET SIZE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-5">
+  <div class="slide-content">
+    <div class="slide-label">Global Market</div>
+    <h2 class="slide-title" style="font-size: 40px;">$23B Market Today. $44B by 2030.</h2>
+    <p class="slide-subtitle">We sit at the intersection of four high-growth markets.</p>
+    <div class="four-col" style="margin-top: 32px;">
+      <div class="feature-card">
+        <div class="feature-icon icon-blue">&#9878;</div>
+        <h3>Digital Legacy</h3>
+        <div class="stat-number" style="font-size: 28px;">$23B</div>
+        <p style="margin-top: 8px;">2025 &rarr; $44B by 2030<br><strong style="color: #60A5FA;">13.7% CAGR</strong></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">&#9733;</div>
+        <h3>Digital Vault</h3>
+        <div class="stat-number purple" style="font-size: 28px;">$1.5B</div>
+        <p style="margin-top: 8px;">2026 &rarr; $3.5B by 2033<br><strong style="color: #A78BFA;">14.5% CAGR</strong></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">&#9830;</div>
+        <h3>WealthTech</h3>
+        <div class="stat-number green" style="font-size: 28px;">$8.6B</div>
+        <p style="margin-top: 8px;">2025 &rarr; $24B by 2032<br><strong style="color: #34D399;">15.6% CAGR</strong></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-cyan">&#9881;</div>
+        <h3>LegalTech</h3>
+        <div class="stat-number cyan" style="font-size: 28px;">$34B</div>
+        <p style="margin-top: 8px;">2025 &rarr; $64B by 2033<br><strong style="color: #22D3EE;">9.4% CAGR</strong></p>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top: 24px;">
+      <!-- <strong style="color: #60A5FA;">Regional Opportunity:</strong> <span style="color: rgba(255,255,255,0.7);">North America: 40% of market. <strong style="color:#fff;">Asia-Pacific is the fastest-growing at 13&ndash;18% CAGR</strong> &mdash; validating our India-first strategy.</span> -->
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: GREAT WEALTH TRANSFER -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-6">
+  <div class="slide-content">
+    <div class="slide-label">Macro Tailwind</div>
+    <h2 class="slide-title" style="font-size: 42px;">The Great Wealth Transfer:<br>$105 Trillion Over 25 Years</h2>
+    <div class="two-col" style="margin-top: 32px;">
+      <div>
+        <ul class="bullet-list">
+          <li><strong>$84.4 trillion</strong> will pass from Baby Boomers to heirs by 2045</li>
+          <li><strong>$2.5 trillion</strong> transferring annually &mdash; starting now</li>
+          <li>Americans 55+ control <strong>$124T (73%)</strong> of total US wealth</li>
+          <li><strong>50%</strong> of the transfer comes from just <strong>2%</strong> of households</li>
+          <li>By 2050, <strong>1 in 6 people</strong> globally will be 65+</li>
+        </ul>
+      </div>
+      <div>
+        <div class="highlight-box orange">
+          <h3 style="font-size: 18px; margin-bottom: 12px; color: #FBBF24;">The Planning Gap</h3>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li>Only <strong>24% of Americans</strong> have a will (down from 40% in 2016)</li>
+            <li><strong>85%+</strong> of Indians have no estate plan</li>
+            <li><strong>&pound;19.4B</strong> in pensions lost in the UK</li>
+            <li>32% of Millennials expect inheritance &mdash; only 22% of Boomers plan to leave one</li>
+          </ul>
+        </div>
+        <p style="margin-top: 16px; font-size: 15px; color: rgba(255,255,255,0.7);"><strong style="color: #fff;">The wealth exists. The planning doesn't.</strong> Vaultomi bridges this gap.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: COMPETITIVE LANDSCAPE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-7">
+  <div class="slide-content scroll-content">
+    <div class="slide-label">Competition</div>
+    <h2 class="slide-title" style="font-size: 38px;">Fragmented Market. No One Does What We Do.</h2>
+    <table class="deck-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Trust &amp; Will</th>
+          <th>Everplans</th>
+          <th>GoodTrust</th>
+          <th>DGLegacy</th>
+          <th>Clocr</th>
+          <th style="background: rgba(59,130,246,0.2); color: #fff;">Vaultomi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Encrypted Vault</td>
+          <td><span class="cross">Limited</span></td>
+          <td><span class="check">5GB</span></td>
+          <td><span class="check">Yes</span></td>
+          <td><span class="check">Yes</span></td>
+          <td><span class="check">Yes</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>Scalable</strong></span></td>
+        </tr>
+        <tr>
+          <td>Legal Will/Trust</td>
+          <td><span class="check">Core</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="check">Yes</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="check">Basic</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check">Partner</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color: #FBBF24;">Video-Verified Nominees</strong></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>UNIQUE</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong style="color: #FBBF24;">Life-Status Verification</strong></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td>Email only</td>
+          <td>Heartbeat</td>
+          <td><span class="cross">No</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>Multi-Channel</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong style="color: #FBBF24;">Physical Doc Delivery</strong></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>UNIQUE</strong></span></td>
+        </tr>
+        <tr>
+          <td><strong style="color: #FBBF24;">Claim Assistance</strong></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td><span class="cross">No</span></td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>UNIQUE</strong></span></td>
+        </tr>
+        <tr>
+          <td>Global / Multi-Market</td>
+          <td>US only</td>
+          <td>US only</td>
+          <td>US only</td>
+          <td>Global</td>
+          <td>US only</td>
+          <td style="background: rgba(59,130,246,0.05);"><span class="check"><strong>Global</strong></span></td>
+        </tr>
+        <tr>
+          <td>Funding</td>
+          <td>$82.5M</td>
+          <td>$16.4M</td>
+          <td>$13.4M</td>
+          <td>N/A</td>
+          <td>$506K</td>
+          <td style="background: rgba(59,130,246,0.05);"><strong style="color: #60A5FA;">Raising</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight-box green" style="margin-top: 20px;">
+      <strong style="color: #34D399;">4 Features NO Competitor Has:</strong> <span style="color: rgba(255,255,255,0.7);">Video-Verified Nominees + Physical Document Delivery + Claim Assistance + Multi-Channel Life Verification. This is our defensible moat.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: INDIA SECTION DIVIDER -->
+<!-- ============================================================ -->
+<div class="slide section-divider" id="slide-8">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content" style="text-align: center;">
+    <div class="slide-label" style="color: #FBBF24; letter-spacing: 5px;">India-First Strategy</div>
+    <h2 class="slide-title" style="font-size: 56px; max-width: 100%; text-align: center;">
+      Why We're Launching<br>in <span style="background: linear-gradient(135deg, #F59E0B, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">India</span> First
+    </h2>
+    <p class="slide-subtitle" style="max-width: 700px; margin: 24px auto 0; text-align: center;">
+      The world's largest unaddressed market for posthumous asset resolution. Massive pain. Zero competition. Regulatory tailwind.
+    </p>
+    <div class="stats-row" style="justify-content: center; margin-top: 36px; flex-wrap: wrap;">
+      <div class="stat-card" style="max-width: 220px; min-width: 180px; text-align: center;">
+        <div class="stat-number" style="font-size: 30px; background: linear-gradient(135deg, #F59E0B, #EF4444); -webkit-background-clip: text; background-clip: text;">$12.5B</div>
+        <div class="stat-label">Unclaimed assets in India (INR 1.04L Cr)</div>
+      </div>
+      <div class="stat-card" style="max-width: 220px; min-width: 180px; text-align: center;">
+        <div class="stat-number green" style="font-size: 30px;">1.03B</div>
+        <div class="stat-label">Internet users, 87% fintech adoption rate</div>
+      </div>
+      <div class="stat-card" style="max-width: 220px; min-width: 180px; text-align: center;">
+        <div class="stat-number purple" style="font-size: 30px;">85%+</div>
+        <div class="stat-label">Indians have no will or estate plan</div>
+      </div>
+      <div class="stat-card" style="max-width: 220px; min-width: 180px; text-align: center;">
+        <div class="stat-number cyan" style="font-size: 30px;">ZERO</div>
+        <div class="stat-label">Direct competitors with full feature set</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: INDIA - THE PROBLEM -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-9">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; The Crisis</div>
+    <h2 class="slide-title" style="font-size: 38px;">INR 1.04 Lakh Crore Lost.<br>Government Campaigns Can't Fix This.</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <table class="deck-table">
+          <thead>
+            <tr><th>Category</th><th>Unclaimed Amount</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bank Deposits (RBI DEA Fund)</td><td><strong style="color: #FBBF24;">INR 60,518 Cr</strong></td></tr>
+            <tr><td>Total Unclaimed Bank Deposits</td><td><strong style="color: #FBBF24;">INR 78,213 Cr</strong></td></tr>
+            <tr><td>Unclaimed Insurance (IRDAI)</td><td><strong style="color: #FBBF24;">INR 8,974 Cr</strong></td></tr>
+            <tr><td>Unclaimed Life Insurance</td><td><strong style="color: #FBBF24;">INR 20,062 Cr</strong></td></tr>
+            <tr><td>Unclaimed Mutual Funds (SEBI)</td><td><strong style="color: #FBBF24;">INR 3,749 Cr</strong></td></tr>
+            <tr><td style="border-bottom: 2px solid rgba(245,158,11,0.4);"><strong style="color: #fff;">TOTAL (PM's Statement)</strong></td><td style="border-bottom: 2px solid rgba(245,158,11,0.4);"><strong style="color: #F59E0B; font-size: 18px;">INR 1.04 Lakh Crore</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="highlight-box orange">
+          <h3 style="font-size: 16px; margin-bottom: 12px; color: #FBBF24;">Government's "Your Money, Your Right" Campaign</h3>
+          <ul class="bullet-list" style="font-size: 14px;">
+            <li>Launched Oct&ndash;Dec 2025 across <strong>748 districts</strong></li>
+            <li>Returned only <strong>INR 5,777 Cr</strong> against 22.95 lakh claims</li>
+            <li>UDGAM portal: <strong>18.86 lakh</strong> registered users</li>
+            <li style="color: #FBBF24;"><strong>Portals help discovery but don't solve the root cause</strong></li>
+          </ul>
+        </div>
+        <div class="highlight-box green" style="margin-top: 16px;">
+          <strong style="color: #34D399;">Vaultomi solves the root cause:</strong> <span style="color: rgba(255,255,255,0.7);">Nominees know exactly what exists + get automated access + receive claim assistance.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: INDIA - REGULATORY TAILWIND -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-10">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; Regulatory Tailwind</div>
+    <h2 class="slide-title" style="font-size: 38px;">DPDPA 2023 Creates the Legal Framework<br>We Need to Operate</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <div class="feature-card" style="margin-bottom: 20px; border-color: rgba(245,158,11,0.2);">
+          <h3 style="color: #FBBF24;">Section 14 &mdash; Right to Nominate</h3>
+          <p>Allows data principals to appoint nominees to manage their digital data after death or incapacity. <strong style="color: #fff;">This is exactly Vaultomi's core mechanism.</strong></p>
+        </div>
+        <div class="feature-card" style="margin-bottom: 20px; border-color: rgba(16,185,129,0.2);">
+          <h3 style="color: #34D399;">Rule 13 (DPDP Rules 2025)</h3>
+          <p>Operationalizes the nomination process. Notified Nov 13, 2025. Phased implementation underway. <strong style="color: #fff;">We're building on law, not around it.</strong></p>
+        </div>
+        <div class="feature-card" style="border-color: rgba(59,130,246,0.2);">
+          <h3 style="color: #60A5FA;">RBI Nominee Update (Nov 2025)</h3>
+          <p>Banks now allow up to 4 nominees per deposit account &mdash; simultaneous or successive. <strong style="color:#fff;">Signals regulatory momentum.</strong></p>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Additional Compliance Framework</h3>
+        <ul class="bullet-list" style="font-size: 14px;">
+          <li><strong>IT Act, 2000</strong> &mdash; Electronic records, digital signatures</li>
+          <li><strong>Indian Succession Act, 1925</strong> &mdash; Property succession (lex situs)</li>
+          <li><strong>RBI Guidelines</strong> &mdash; Data localization, KYC/AML</li>
+          <li><strong>IRDAI Guidelines</strong> &mdash; Insurance claim & nominee processes</li>
+          <li><strong>Bharatiya Sakshya Adhiniyam</strong> &mdash; Electronic records as evidence</li>
+        </ul>
+        <div class="highlight-box" style="margin-top: 20px;">
+          <strong style="color: #60A5FA;">Legal Feasibility: HIGH</strong>
+          <p style="color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 8px;">DPDPA Section 14 + Rule 13 provide explicit legal backing. Supreme Court (Shakti Yezdani, 2023) clarified nominee framework. Our workflow is legally sound.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: INDIA - MARKET LANDSCAPE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-11">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; Market Landscape</div>
+    <h2 class="slide-title" style="font-size: 38px;">India's Fintech Engine Powers Our Distribution</h2>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number" style="font-size: 30px;">$51.3B</div>
+        <div class="stat-label">India Fintech Market (2026) &rarr; $109B by 2031</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number green" style="font-size: 30px;">87%</div>
+        <div class="stat-label">Fintech adoption rate (vs. 67% global average)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number purple" style="font-size: 30px;">9,000+</div>
+        <div class="stat-label">Fintech companies in India &mdash; 3rd largest ecosystem</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number cyan" style="font-size: 30px;">1.03B</div>
+        <div class="stat-label">Internet users. 1.14B smartphone owners</div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 12px;">India TAM: $80&ndash;150M by 2028</h3>
+        <ul class="bullet-list" style="font-size: 14px;">
+          <li>~3.5 crore HNI/upper-middle-class households</li>
+          <li>Willingness to pay: INR 1,500&ndash;5,000/year</li>
+          <li>Growing at <strong>20&ndash;25% CAGR</strong></li>
+          <li>India DMS market: $0.29B (2026) &rarr; $1.2B+ by 2034</li>
+          <li>Asia-Pacific: <strong>fastest-growing</strong> vault market globally</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 12px;">Zero Direct Competition in India</h3>
+        <ul class="bullet-list" style="font-size: 14px;">
+          <li><strong>DigiLocker</strong> &mdash; Govt docs only, no posthumous workflow</li>
+          <li><strong>Bank Lockers</strong> &mdash; Physical only, no digital access</li>
+          <li><strong>EZWill/WillJini</strong> &mdash; Will creation only, no vault</li>
+          <li><strong>Insurer Apps</strong> &mdash; Single-issuer, no aggregation</li>
+          <li style="color: #FBBF24;"><strong>No India platform combines vault + nominees + delivery + claims</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: TARGET AUDIENCE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-12">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; Target Segments</div>
+    <h2 class="slide-title" style="font-size: 38px;">Three High-Value Beachheads. Then Mass Market.</h2>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="feature-card" style="border-color: rgba(245,158,11,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+          <span class="tag tag-orange">TIER 1 &mdash; LAUNCH</span>
+        </div>
+        <h3 style="font-size: 20px; margin-bottom: 8px;">NRIs</h3>
+        <div class="stat-number" style="font-size: 24px; background: linear-gradient(135deg, #F59E0B, #EF4444); -webkit-background-clip: text; background-clip: text;">1.35 Cr Globally</div>
+        <ul class="bullet-list" style="font-size: 13px; margin-top: 12px;">
+          <li>USD income &mdash; highest willingness to pay</li>
+          <li>Can't manage Indian documents remotely</li>
+          <li>Complex dual-jurisdiction succession</li>
+          <li>Digitally savvy, SaaS-comfortable</li>
+          <li><strong>Addressable: 20&ndash;30L NRIs with Indian assets</strong></li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-color: rgba(139,92,246,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+          <span class="tag tag-purple">TIER 2 &mdash; MONTH 3</span>
+        </div>
+        <h3 style="font-size: 20px; margin-bottom: 8px;">HNIs &amp; Seniors</h3>
+        <div class="stat-number purple" style="font-size: 24px;">14 Cr Seniors</div>
+        <ul class="bullet-list purple" style="font-size: 13px; margin-top: 12px;">
+          <li>HNIs: INR 5Cr+ investable assets (~4.5L individuals)</li>
+          <li>Seniors: 8.6% of population, growing to 20% by 2050</li>
+          <li>Most vulnerable to unclaimed assets problem</li>
+          <li>Need agent-assisted onboarding</li>
+          <li><strong>Lifetime plan resonates strongly</strong></li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-color: rgba(6,182,212,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+          <span class="tag tag-blue">TIER 3 &mdash; MONTH 6</span>
+        </div>
+        <h3 style="font-size: 20px; margin-bottom: 8px;">Professionals 35&ndash;55</h3>
+        <div class="stat-number cyan" style="font-size: 24px;">~3 Cr Households</div>
+        <ul class="bullet-list cyan" style="font-size: 13px; margin-top: 12px;">
+          <li>INR 15L&ndash;50L income, dual-income families</li>
+          <li>Trigger: property purchase, parent's death, child born</li>
+          <li>Responsive to digital-first marketing</li>
+          <li>LinkedIn, YouTube, fintech influencers</li>
+          <li><strong>Family plan: INR 2,499/year sweet spot</strong></li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top: 20px; font-size: 14px; color: rgba(255,255,255,0.5); text-align: center;">Later expansion: Business owners (6.3 Cr MSMEs) | Single parents | Armed forces families</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13: HOW IT WORKS IN INDIA -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-13">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; How It Works</div>
+    <h2 class="slide-title" style="font-size: 36px;">The Current Nightmare vs. The Vaultomi Way</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <div class="feature-card" style="border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.04);">
+          <h3 style="color: #F87171; font-size: 16px; margin-bottom: 16px;">TODAY: When a Family Member Dies in India</h3>
+          <ul class="bullet-list" style="font-size: 13px;">
+            <li style="color: rgba(255,255,255,0.6);">Family doesn't know which banks, insurers, or MFs hold accounts</li>
+            <li style="color: rgba(255,255,255,0.6);">Physical documents lost &mdash; bank locker keys missing, safe combinations forgotten</li>
+            <li style="color: rgba(255,255,255,0.6);">Succession certificate required from court &mdash; <strong style="color: #F87171;">takes 1&ndash;3 years</strong></li>
+            <li style="color: rgba(255,255,255,0.6);">Multiple visits to banks, insurers, registrars &mdash; each with different paperwork</li>
+            <li style="color: rgba(255,255,255,0.6);">Family disputes arise over asset existence and distribution</li>
+            <li style="color: rgba(255,255,255,0.6);">Assets go unclaimed &rarr; transferred to government after 10 years</li>
+          </ul>
+          <div style="text-align: center; margin-top: 16px;">
+            <span class="tag tag-red" style="font-size: 14px; padding: 8px 20px;">Average resolution: 2&ndash;5 years</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="feature-card" style="border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.04);">
+          <h3 style="color: #34D399; font-size: 16px; margin-bottom: 16px;">WITH VAULTOMI: Automated Resolution</h3>
+          <ul class="bullet-list green" style="font-size: 13px;">
+            <li style="color: rgba(255,255,255,0.6);">All documents pre-organized with tagged categories (bank, insurance, property)</li>
+            <li style="color: rgba(255,255,255,0.6);">Nominees pre-verified via Aadhaar eKYC + video verification</li>
+            <li style="color: rgba(255,255,255,0.6);">Annual life-status check fails &rarr; 3 escalation attempts (email, SMS, phone)</li>
+            <li style="color: rgba(255,255,255,0.6);">Death certificate uploaded &rarr; nominee video-verified &rarr; documents released</li>
+            <li style="color: rgba(255,255,255,0.6);">Physical originals delivered with video verification at handover</li>
+            <li style="color: rgba(255,255,255,0.6);"><strong style="color: #34D399;">Claim assistance guides nominee</strong> through each bank, insurer, and registrar</li>
+          </ul>
+          <div style="text-align: center; margin-top: 16px;">
+            <span class="tag tag-green" style="font-size: 14px; padding: 8px 20px;">Resolution: weeks, not years</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14: INDIA GTM & PARTNERSHIPS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-14">
+  <div class="india-gradient" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <div class="slide-content">
+    <div class="slide-label" style="color: #FBBF24;">India &mdash; Go-to-Market</div>
+    <h2 class="slide-title" style="font-size: 36px;">B2B2C Distribution Through Trusted Institutions</h2>
+    <div class="three-col" style="margin-top: 28px;">
+      <div class="feature-card" style="border-color: rgba(59,130,246,0.2);">
+        <div class="feature-icon icon-blue">&#9733;</div>
+        <h3>Bank Partnerships</h3>
+        <p><strong style="color: #fff;">SBI, HDFC, ICICI, Axis</strong><br><br>Offer SDV as add-on to savings accounts &amp; locker customers. Bank reduces unclaimed deposit liability. We get trusted distribution.</p>
+      </div>
+      <div class="feature-card" style="border-color: rgba(139,92,246,0.2);">
+        <div class="feature-icon icon-purple">&#9830;</div>
+        <h3>Insurance Companies</h3>
+        <p><strong style="color: #fff;">LIC, HDFC Life, ICICI Pru, Max</strong><br><br>Bundle SDV with life insurance policies. Insurer reduces INR 8,974 Cr unclaimed liability. We get high-intent users at purchase.</p>
+      </div>
+      <div class="feature-card" style="border-color: rgba(16,185,129,0.2);">
+        <div class="feature-icon icon-green">&#9881;</div>
+        <h3>Legal &amp; CA Networks</h3>
+        <p><strong style="color: #fff;">Top law firms, CA associations</strong><br><br>Legal validation + HNI referrals. CAs recommend during tax planning. Commission-based referral model.</p>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="highlight-box" style="margin-top: 0;">
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #60A5FA;">Phase 1: Digital (M1&ndash;6)</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.6);">SEO/Content ("unclaimed assets India"), YouTube (Hindi + English), LinkedIn (NRIs), fintech influencers, Google/Meta ads</p>
+      </div>
+      <div class="highlight-box" style="margin-top: 0;">
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #A78BFA;">Phase 2: B2B2C + Agents (M6&ndash;18)</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.6);">Bank/insurer integration, wealth manager channel, local agent network for seniors in Tier 1 & 2 cities, NRI convention presence</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15: GLOBAL EXPANSION STRATEGY -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-15">
+  <div class="cover-bg"></div>
+  <div class="slide-content">
+    <div class="slide-label">Global Expansion</div>
+    <h2 class="slide-title" style="font-size: 38px;">India First. Then the World.</h2>
+    <p class="slide-subtitle" style="font-size: 17px;">India validates the model at lower cost. The same playbook scales globally with market-specific compliance.</p>
+    <div class="timeline" style="margin-top: 40px;">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Phase 1: M1&ndash;9</div>
+        <div class="timeline-title">India MVP</div>
+        <div class="timeline-desc">NRI beta &rarr; India public launch. Tier 1 cities. Digital + first bank partnerships. P0 features. SOC 2 cert.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Phase 2: M9&ndash;15</div>
+        <div class="timeline-title">US &amp; UK Launch</div>
+        <div class="timeline-desc">RUFADAA compliance. AARP/Age UK partnerships. Mobile app. Claim assistance. Enterprise dashboard.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Phase 3: M15&ndash;24</div>
+        <div class="timeline-title">UAE + Australia</div>
+        <div class="timeline-desc">Expat corridor. DIFC entity. Physical delivery rollout. Agent network for seniors.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Phase 4: M24&ndash;36</div>
+        <div class="timeline-title">EU Expansion</div>
+        <div class="timeline-desc">France first (strongest law). Germany, Netherlands. White-label API. AI features.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-label">Phase 5: M36&ndash;48</div>
+        <div class="timeline-title">Category Leadership</div>
+        <div class="timeline-desc">15+ countries. Crypto inheritance. Potential acquisitions. IPO readiness.</div>
+      </div>
+    </div>
+    <div class="highlight-box green" style="margin-top: 32px;">
+      <strong style="color: #34D399;">Why India First?</strong> <span style="color: rgba(255,255,255,0.7);">Lower burn rate. Largest unaddressed pain (INR 1.04L Cr unclaimed). DPDPA Section 14 provides strongest legal framework globally. NRI segment bridges India&ndash;US/UK markets. Physical delivery is most critical in India (originals required for property, courts).</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16: BUSINESS MODEL -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-16">
+  <div class="slide-content">
+    <div class="slide-label">Business Model</div>
+    <h2 class="slide-title" style="font-size: 38px;">Multi-Layer Revenue. High Retention. Expanding ARPU.</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Consumer Pricing</h3>
+        <table class="deck-table">
+          <thead>
+            <tr><th>Tier</th><th>India</th><th>US/UK</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong style="color: #fff;">Free</strong></td><td>INR 0</td><td>$0</td></tr>
+            <tr><td><strong style="color: #fff;">Family</strong></td><td>INR 2,499/yr</td><td>$79/yr</td></tr>
+            <tr><td><strong style="color: #fff;">Premium</strong></td><td>INR 4,999/yr</td><td>$149/yr</td></tr>
+            <tr><td><strong style="color: #fff;">NRI / Global</strong></td><td colspan="2" style="text-align:center;">$99/yr</td></tr>
+            <tr><td><strong style="color: #fff;">Lifetime</strong></td><td>INR 24,999</td><td>$999</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Revenue Streams</h3>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">Subscriptions (SaaS)</span>
+            <span class="tag tag-blue">~60% of revenue</span>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">Claim Assistance Fees</span>
+            <span class="tag tag-green">~15% of revenue</span>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">B2B / Enterprise Licensing</span>
+            <span class="tag tag-purple">~15% of revenue</span>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">Physical Delivery + Notarization</span>
+            <span class="tag tag-orange">~10% of revenue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top: 20px;">
+      <strong style="color: #60A5FA;">Key Insight:</strong> <span style="color: rgba(255,255,255,0.7);">Annual life verification creates <strong style="color:#fff;">natural retention</strong>. Claim assistance expands ARPU at the moment of highest need. B2B partnerships provide <strong style="color:#fff;">subsidized CAC</strong> and enterprise revenue.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17: FINANCIAL PROJECTIONS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-17">
+  <div class="slide-content">
+    <div class="slide-label">Financial Projections</div>
+    <h2 class="slide-title" style="font-size: 38px;">Path to $100M+ ARR by Year 3</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <table class="deck-table">
+          <thead>
+            <tr><th>Metric</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 5</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:#fff;">Users</strong></td>
+              <td>100K</td>
+              <td>500K</td>
+              <td>1.5M</td>
+              <td>5M+</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#fff;">Markets</strong></td>
+              <td>India + NRI</td>
+              <td>+ US, UK</td>
+              <td>+ UAE, EU, AU</td>
+              <td>15+ countries</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#fff;">ARR</strong></td>
+              <td style="color: #60A5FA;"><strong>$5&ndash;8M</strong></td>
+              <td style="color: #A78BFA;"><strong>$25&ndash;40M</strong></td>
+              <td style="color: #34D399;"><strong>$80&ndash;120M</strong></td>
+              <td style="color: #FBBF24;"><strong>$300&ndash;500M</strong></td>
+            </tr>
+            <tr>
+              <td><strong style="color:#fff;">B2B Partners</strong></td>
+              <td>2&ndash;3</td>
+              <td>10+</td>
+              <td>25+</td>
+              <td>100+</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#fff;">Team</strong></td>
+              <td>25&ndash;40</td>
+              <td>80&ndash;120</td>
+              <td>200+</td>
+              <td>400+</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.4);">Conservative estimates based on 60% free tier, 30% family, 10% premium/NRI mix</p>
+      </div>
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Unit Economics (Target)</h3>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">Blended ARPU</span>
+            <strong style="color: #60A5FA;">$60&ndash;80/year</strong>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">CAC (B2B2C channel)</span>
+            <strong style="color: #34D399;">$15&ndash;25</strong>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">LTV (5-year retention)</span>
+            <strong style="color: #A78BFA;">$250&ndash;400</strong>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">LTV/CAC Ratio</span>
+            <strong style="color: #FBBF24;">10&ndash;16x</strong>
+          </div>
+        </div>
+        <div class="feature-card" style="padding: 20px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: rgba(255,255,255,0.7);">Gross Margin</span>
+            <strong style="color: #34D399;">75&ndash;85%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18: MVP ROADMAP -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-18">
+  <div class="slide-content scroll-content">
+    <div class="slide-label">Product Roadmap</div>
+    <h2 class="slide-title" style="font-size: 36px;">MVP-First Approach. Ship Fast. Iterate with Data.</h2>
+    <div class="three-col" style="margin-top: 24px;">
+      <div class="feature-card" style="border-color: rgba(239,68,68,0.3);">
+        <span class="tag tag-red" style="margin-bottom: 12px; display: inline-block;">P0 &mdash; MUST HAVE (Month 1&ndash;3)</span>
+        <ul class="bullet-list" style="font-size: 13px;">
+          <li>End-to-end encrypted vault (upload, organize, tag)</li>
+          <li>Nominee onboarding &mdash; Aadhaar eKYC + video verification</li>
+          <li>Annual life-status verification (email + SMS)</li>
+          <li>Automated nominee notification after 3 failed checks</li>
+          <li>User dashboard &amp; activity logs</li>
+          <li>MFA + biometric login</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-color: rgba(59,130,246,0.3);">
+        <span class="tag tag-blue" style="margin-bottom: 12px; display: inline-block;">P1 &mdash; SHOULD HAVE (Month 3&ndash;9)</span>
+        <ul class="bullet-list" style="font-size: 13px;">
+          <li>Mobile app (Android priority in India)</li>
+          <li>Multi-language (Hindi + English for MVP)</li>
+          <li>Claim assistance &mdash; guided workflows</li>
+          <li>Family sharing (controlled view for trusted members)</li>
+          <li>B2B admin dashboard for partner banks</li>
+          <li>DigiLocker integration</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="border-color: rgba(16,185,129,0.3);">
+        <span class="tag tag-green" style="margin-bottom: 12px; display: inline-block;">P2 &mdash; NICE TO HAVE (Month 9&ndash;18)</span>
+        <ul class="bullet-list green" style="font-size: 13px;">
+          <li>Physical document delivery + video handover</li>
+          <li>Digital will creation / partner integration</li>
+          <li>White-label API for enterprise</li>
+          <li>Blockchain document integrity</li>
+          <li>AI document categorization</li>
+          <li>Cross-border compliance (US, UK, UAE)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top: 20px;">
+      <strong style="color: #60A5FA;">Tech Stack:</strong> <span style="color: rgba(255,255,255,0.7);">Zero-knowledge encryption | AWS India (data localization) | SOC 2 Type II + ISO 27001 | Aadhaar eKYC integration | Liveness detection for video verification | React Native (mobile) | Node.js/Python (backend)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19: MOAT & DEFENSIBILITY -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-19">
+  <div class="slide-content">
+    <div class="slide-label">Defensibility</div>
+    <h2 class="slide-title" style="font-size: 38px;">Five Layers of Competitive Moat</h2>
+    <div class="stats-row" style="flex-wrap: wrap;">
+      <div class="stat-card" style="flex: 1; min-width: 280px;">
+        <div class="feature-icon icon-blue" style="margin-bottom: 12px;">1</div>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Feature Exclusivity</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">4 features no competitor has: video-verified nominees, physical delivery, claim assistance, multi-channel life verification. Patentable workflows.</p>
+      </div>
+      <div class="stat-card" style="flex: 1; min-width: 280px;">
+        <div class="feature-icon icon-purple" style="margin-bottom: 12px;">2</div>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">B2B Partnership Moats</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Bank and insurer integrations create high switching costs. Once embedded in financial institution workflow, competitors can't displace.</p>
+      </div>
+      <div class="stat-card" style="flex: 1; min-width: 280px;">
+        <div class="feature-icon icon-green" style="margin-bottom: 12px;">3</div>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Network Effects</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Family sharing creates household penetration. Every user onboards 2&ndash;4 nominees who become potential users. Viral within families.</p>
+      </div>
+      <div class="stat-card" style="flex: 1; min-width: 280px;">
+        <div class="feature-icon icon-orange" style="margin-bottom: 12px;">4</div>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Data &amp; Trust Gravity</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Once critical documents are stored, switching cost is extremely high. Users won't move life documents for a marginal feature improvement.</p>
+      </div>
+      <div class="stat-card" style="flex: 1; min-width: 280px;">
+        <div class="feature-icon icon-cyan" style="margin-bottom: 12px;">5</div>
+        <h3 style="font-size: 16px; margin-bottom: 8px;">Regulatory Compliance</h3>
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">Multi-jurisdiction compliance (DPDPA, RUFADAA, GDPR, DUAA) creates 12&ndash;18 month barrier for new entrants per market.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20: RISKS & MITIGATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-20">
+  <div class="slide-content">
+    <div class="slide-label">Risk Management</div>
+    <h2 class="slide-title" style="font-size: 38px;">We've Mapped Every Risk. Here's How We Mitigate.</h2>
+    <div class="two-col" style="margin-top: 28px;">
+      <div>
+        <table class="deck-table">
+          <thead>
+            <tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color: #fff;">Data Breach</strong></td>
+              <td><span class="tag tag-red">Critical</span></td>
+              <td style="font-size: 12px;">Zero-knowledge encryption. SOC 2 + ISO 27001. Bug bounty. $10M+ cyber insurance</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fff;">False Death Trigger</strong></td>
+              <td><span class="tag tag-red">Critical</span></td>
+              <td style="font-size: 12px;">3 attempts x 3 channels. 90-day grace. Death cert required. Video verification</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fff;">Nominee vs. Heir Dispute</strong></td>
+              <td><span class="tag tag-orange">High</span></td>
+              <td style="font-size: 12px;">We're custodian, not arbiter. Dispute resolution clause. Court order compliance</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fff;">Fraud / Impersonation</strong></td>
+              <td><span class="tag tag-orange">High</span></td>
+              <td style="font-size: 12px;">Aadhaar eKYC + liveness detection. Death cert cross-verification via government APIs</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fff;">Cultural Resistance</strong></td>
+              <td><span class="tag tag-orange">High</span></td>
+              <td style="font-size: 12px;">"Family protection" framing. Avoid death language. Trigger-based marketing</td>
+            </tr>
+            <tr>
+              <td><strong style="color: #fff;">Regulatory Change</strong></td>
+              <td><span class="tag tag-blue">Medium</span></td>
+              <td style="font-size: 12px;">Retained counsel per jurisdiction. Flexible compliance architecture. Advisory board</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="highlight-box green">
+          <h3 style="font-size: 16px; margin-bottom: 12px; color: #34D399;">Why Risk is Manageable</h3>
+          <ul class="bullet-list green" style="font-size: 13px;">
+            <li><strong>Zero-knowledge architecture</strong> means even we can't read user data &mdash; breach impact minimized</li>
+            <li><strong>Multi-layer verification</strong> makes false triggers nearly impossible</li>
+            <li><strong>Legal positioning as custodian</strong> (not executor) limits dispute liability</li>
+            <li><strong>India's DPDPA</strong> provides strongest legal framework for this model globally</li>
+            <li><strong>B2B partnerships</strong> with banks/insurers add institutional trust layer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 21: THE ASK -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-21">
+  <div class="cover-bg"></div>
+  <div class="slide-content">
+    <div class="slide-label">The Ask</div>
+    <h2 class="slide-title" style="font-size: 44px;">Raising $10&ndash;15M Series A</h2>
+    <p class="slide-subtitle" style="margin-bottom: 36px;">To build the world's first Posthumous Asset Resolution Platform, starting with India.</p>
+    <div class="four-col">
+      <div class="feature-card" style="text-align: center; border-color: rgba(59,130,246,0.3);">
+        <div class="stat-number" style="font-size: 28px;">40%</div>
+        <div class="stat-label" style="font-size: 13px;">Product &amp; Engineering<br>Core platform, mobile apps, security certifications, AI features</div>
+      </div>
+      <div class="feature-card" style="text-align: center; border-color: rgba(139,92,246,0.3);">
+        <div class="stat-number purple" style="font-size: 28px;">25%</div>
+        <div class="stat-label" style="font-size: 13px;">Growth &amp; Marketing<br>Digital campaigns, influencer partnerships, content, SEO</div>
+      </div>
+      <div class="feature-card" style="text-align: center; border-color: rgba(16,185,129,0.3);">
+        <div class="stat-number green" style="font-size: 28px;">20%</div>
+        <div class="stat-label" style="font-size: 13px;">B2B Partnerships<br>Bank/insurer integration, enterprise sales, agent network</div>
+      </div>
+      <div class="feature-card" style="text-align: center; border-color: rgba(245,158,11,0.3);">
+        <div class="stat-number" style="font-size: 28px; background: linear-gradient(135deg, #F59E0B, #EF4444); -webkit-background-clip: text; background-clip: text;">15%</div>
+        <div class="stat-label" style="font-size: 13px;">Compliance &amp; Operations<br>Legal, SOC 2, ISO 27001, physical delivery infrastructure</div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 32px;">
+      <div class="highlight-box">
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #60A5FA;">18-Month Milestones</h3>
+        <ul class="bullet-list" style="font-size: 13px;">
+          <li><strong>500K+ users</strong> across India, US, UK</li>
+          <li><strong>$20M+ ARR</strong></li>
+          <li><strong>10+ B2B partners</strong> (banks, insurers, wealth managers)</li>
+          <li><strong>Physical delivery live</strong> in India and UK</li>
+          <li><strong>Series B ready</strong> at $30&ndash;60M</li>
+        </ul>
+      </div>
+      <div class="highlight-box green">
+        <h3 style="font-size: 16px; margin-bottom: 12px; color: #34D399;">Why Now?</h3>
+        <ul class="bullet-list green" style="font-size: 13px;">
+          <li><strong>DPDPA 2023 + Rules 2025</strong> just created the legal framework</li>
+          <li><strong>"Your Money, Your Right"</strong> campaign is driving public awareness</li>
+          <li><strong>$105T Great Wealth Transfer</strong> is accelerating</li>
+          <li><strong>Estate tax exemption halving</strong> in 2026 (US) creates urgency</li>
+          <li><strong>Zero competition</strong> with our full feature stack</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 22: CLOSING -->
+<!-- ============================================================ -->
+<div class="slide section-divider" id="slide-22">
+  <div class="cover-bg"></div>
+  <div class="slide-content" style="text-align: center;">
+    <h1 class="slide-title" style="font-size: 52px; max-width: 100%; text-align: center;">
+      Secure<span style="background: var(--gradient1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Vault</span>
+    </h1>
+    <p class="slide-subtitle" style="max-width: 700px; margin: 16px auto 0; font-size: 22px; text-align: center;">
+      Protecting what matters most.<br>
+      <span style="color: rgba(255,255,255,0.4);">So your family never has to search for what's rightfully theirs.</span>
+    </p>
+    <div style="margin-top: 48px; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
+      <div style="text-align: center;">
+        <div class="stat-number" style="font-size: 32px;">$200B+</div>
+        <div class="stat-label">Unclaimed globally</div>
+      </div>
+      <div style="text-align: center;">
+        <div class="stat-number purple" style="font-size: 32px;">$23B</div>
+        <div class="stat-label">Market today</div>
+      </div>
+      <div style="text-align: center;">
+        <div class="stat-number green" style="font-size: 32px;">4 Unique</div>
+        <div class="stat-label">Features no one else has</div>
+      </div>
+      <div style="text-align: center;">
+        <div class="stat-number cyan" style="font-size: 32px;">$10&ndash;15M</div>
+        <div class="stat-label">Series A raise</div>
+      </div>
+    </div>
+    <div style="margin-top: 56px;">
+      <p style="font-size: 18px; color: rgba(255,255,255,0.7);">Let's build the safety net every family deserves.</p>
+      <p style="margin-top: 16px; font-size: 14px; color: rgba(255,255,255,0.3);">contact@vaultomi.com &nbsp;|&nbsp; vaultomi.com &nbsp;|&nbsp; Confidential &mdash; April 2026</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- end deck-container -->
+
+<!-- Navigation Controls -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" onclick="prevSlide()">&#8592;</button>
+  <span class="slide-counter" id="slideCounter">1 / 22</span>
+  <button class="nav-btn" id="nextBtn" onclick="nextSlide()">&#8594;</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 22;
+
+  function showSlide(n) {
+    if (n < 1 || n > totalSlides) return;
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('slide-' + n);
+    if (target) {
+      target.classList.add('active');
+      currentSlide = n;
+      document.getElementById('slideCounter').textContent = n + ' / ' + totalSlides;
+      document.getElementById('progressBar').style.width = ((n / totalSlides) * 100) + '%';
+    }
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      nextSlide();
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      prevSlide();
+    }
+    if (e.key === 'Home') { e.preventDefault(); showSlide(1); }
+    if (e.key === 'End') { e.preventDefault(); showSlide(totalSlides); }
+  });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) nextSlide();
+      else prevSlide();
+    }
+  });
+
+  // Initialize
+  showSlide(1);
+</script>
+
+</body>
+</html>
